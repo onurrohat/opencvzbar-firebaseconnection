@@ -21,7 +21,9 @@ cap.set(4,480)
 outputlist = []
         
 while True:
-
+    
+    outputlist.clear()
+    productsnumber=0
     success,test1 = cap.read()
     
     grayscale=cv2.cvtColor(test1,cv2.COLOR_BGR2GRAY)
@@ -55,24 +57,10 @@ while True:
         productsnumber = len(outputlist) 
         json_totalnum = json.dumps(productsnumber)
 
-        #print(outputlist)
-       # print(productsnumber)
-        #outputlist.append(myData)
-        #if(outputlist.sort!=outputlist.sort):
-                #send list again to firebase
-                #outputlist.append(myData)
-                #print(outputlist)
-                #print(productsnumber)
-        #else:
-            #print("No Change Detected")
-
+        send_to_firebase = fb_app.patch("https://mec427inventorymanagement-default-rtdb.europe-west1.firebasedatabase.app/",{"/QR Code/Outputs" : json_output})
+        send_to_firebase_totalnum = fb_app.patch("https://mec427inventorymanagement-default-rtdb.europe-west1.firebasedatabase.app/",{"/QR Code/Total Number ":json_totalnum})
         
-
-        send_to_firebase = fb_app.put("https://mec427inventorymanagement-default-rtdb.europe-west1.firebasedatabase.app/","/QR Code/Outputs",json_output)
-        send_to_firebase_totalnum = fb_app.put("https://mec427inventorymanagement-default-rtdb.europe-west1.firebasedatabase.app/","/QR Code/Total Number :",json_totalnum)
         
-       
-            
             
         
 
