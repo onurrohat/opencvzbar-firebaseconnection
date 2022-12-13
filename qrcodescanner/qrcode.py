@@ -5,6 +5,7 @@ import pandas as pd
 from openpyxl import Workbook
 import os
 from firebase import firebase
+import json
 
 fb_app = firebase.FirebaseApplication('https://mec427inventorymanagement-default-rtdb.europe-west1.firebasedatabase.app/',None)
 
@@ -48,11 +49,14 @@ while True:
         
         outputlist.append(myData)
         outputlist=list(dict.fromkeys(outputlist)) #delete duplicates from a list
-        
-        productsnumber = len(outputlist) 
+        json_output = json.dumps(outputlist)
+        print(json_output)
 
-        print(outputlist)
-        print(productsnumber)
+        productsnumber = len(outputlist) 
+        json_totalnum = json.dumps(productsnumber)
+
+        #print(outputlist)
+       # print(productsnumber)
         #outputlist.append(myData)
         #if(outputlist.sort!=outputlist.sort):
                 #send list again to firebase
@@ -62,7 +66,10 @@ while True:
         #else:
             #print("No Change Detected")
 
-        send_to_firebase = fb_app.post("/QR Code",outputlist)
+        
+
+        send_to_firebase = fb_app.put("https://mec427inventorymanagement-default-rtdb.europe-west1.firebasedatabase.app/","/QR Code/Outputs",json_output)
+        send_to_firebase_totalnum = fb_app.put("https://mec427inventorymanagement-default-rtdb.europe-west1.firebasedatabase.app/","/QR Code/Total Number :",json_totalnum)
         
        
             
