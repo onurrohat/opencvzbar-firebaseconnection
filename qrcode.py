@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from pyzbar.pyzbar import decode
 import pandas as pd
-from openpyxl import Workbook
+
 import os
 from firebase import firebase
 
@@ -12,7 +12,7 @@ fb_app = firebase.FirebaseApplication('https://mec427inventorymanagement-default
 
 #test1 = cv2.imread('logo.png')
 
-cap = cv2.VideoCapture(1,cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
 
 cap.set(3,640)
 cap.set(4,480)
@@ -21,16 +21,16 @@ outputlist = []
         
 while True:
 
-    success,test1 = cap.read()
+    success,test = cap.read()
     
-    grayscale=cv2.cvtColor(test1,cv2.COLOR_BGR2GRAY)
+    grayscale=cv2.cvtColor(test,cv2.COLOR_BGR2GRAY)
     for barcode in decode(grayscale):
        
 
         myData= barcode.data.decode('utf-8')
         #print(myData)
         #barcodedata = pd.DataFrame(myData)
-        file_name = 'Kitap1.xlsx'
+        #file_name = 'Kitap1.xlsx'
 
         #barcodedata.to_excel('Kitap.xlsx',sheet_name="Sheet1")
         #print('Data exported into database succesfully')
@@ -53,6 +53,12 @@ while True:
 
         print(outputlist)
         print(productsnumber)
+
+        mystring =''
+        for x in outputlist :
+            mystring += "     "+ x+  "     "
+
+        print(mystring)
         #outputlist.append(myData)
         #if(outputlist.sort!=outputlist.sort):
                 #send list again to firebase
@@ -61,8 +67,10 @@ while True:
                 #print(productsnumber)
         #else:
             #print("No Change Detected")
+        send_to_firebase = fb_app.post("/QR Code/totalnum",productsnumber)
+        
+        send_to_firebase = fb_app.post("/QR Code/outputs",mystring)
 
-        send_to_firebase = fb_app.post("/QR Code",outputlist)
         
        
             
